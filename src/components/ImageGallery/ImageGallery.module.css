@@ -1,0 +1,39 @@
+.ImageGallery {
+    display: grid;
+    max-width: calc(100vw - 48px);
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-gap: 16px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    list-style: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .Error_Img{
+    top: 80px;
+    left: 25%;
+
+
+    position: absolute;
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    min-height: 64px;
+    padding-right: 24px;
+    padding-left: 24px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    color: gray;
+    background-color: #d9def9;
+    
+  }
+
+  .text_idle{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: calc(100vw - 48px);
+    
+  }
+  
