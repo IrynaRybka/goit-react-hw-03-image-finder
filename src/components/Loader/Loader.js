@@ -1,11 +1,12 @@
 import { ColorRing } from 'react-loader-spinner';
+import css from './loader.module.css';
 export default function Loader() {
     return (
-        <div role="alert">
+        <div role="alert" className={css.loader}>
             <ColorRing
   visible={true}
-  height="80"
-  width="80"
+  height="100"
+  width="100"
   ariaLabel="blocks-loading"
   wrapperStyle={{}}
   wrapperClass="blocks-wrapper"

@@ -1,11 +1,12 @@
 import { Component } from 'react';
-// import {ImSearch} from 'react-icons/im';
+
 import {ToastContainer} from 'react-toastify';
+import "react-toastify/ReactToastify.min.css";
 // import ImgAPI from '../services/Images-api';
 
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
-// const KEY = '31302238-3bbf3bf14ed620b40113bc545';
+
 export default class App extends Component {
   state = {
     query: "",

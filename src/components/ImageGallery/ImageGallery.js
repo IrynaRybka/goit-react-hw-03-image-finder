@@ -5,7 +5,7 @@ import api from '../../services/imgAPI';
 import css from './ImageGallery.module.css';
 
 import MistakeImg from '../../images/mistake.jpg';
-
+// import Modal from 'components/Modal/Modal';
 
 export default class ImageGallery extends Component {
   state = {
@@ -13,9 +13,6 @@ export default class ImageGallery extends Component {
     error: null,
     status: 'idle',
     showModal: false,
-  };
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -32,12 +29,19 @@ export default class ImageGallery extends Component {
     }
   }
 
-  render() {
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
+ render() {
     const { images, error, status } = this.state;
     const { query } = this.props;
 
     if (status === 'idle') {
-      return <div className={css.text_idle}>Напишите какие картинки вы хотите увидеть. Например "cat"</div>;
+      return (
+        <div className={css.text_idle}>
+          <p>Напишите какие картинки вы хотите увидеть. Например "cat"</p>
+        </div>
+      );
     }
 
     if (status === 'pending') {
@@ -51,14 +55,19 @@ export default class ImageGallery extends Component {
     if (status === 'resolved' && images.hits.length !== 0) {
       return (
         <ul className={css.ImageGallery}>
-          <ImageGalleryItem images={images} toggleModal={this.toggleModal} showModal={this.state.showModal}/>
+          <ImageGalleryItem
+            images={images}
+            toggleModal={this.toggleModal}
+            showModal={this.state.showModal}
+          />
         </ul>
+    
       );
     } else {
       return (
         <div className={css.Error_Img}>
           <p>С названием {query} картинок нет. Попробуйте еще раз</p>
-          <img src={MistakeImg} width="480" alt="Mistake" />
+          <img src={MistakeImg} width="320" alt="Mistake" />
         </div>
       );
     }

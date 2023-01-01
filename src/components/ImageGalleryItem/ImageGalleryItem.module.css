@@ -15,3 +15,34 @@
     transform: scale(1.03);
     cursor: zoom-in;
   }
+  .largeImageURL{
+    max-width: calc(100vw - 48px);
+    max-height: calc(100vh - 24px);
+    position: relative;
+  }
+
+  .close_btn {
+    background-color: transparent;
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate( -52px, 12px);
+    width: 30px;
+    height: 30px;
+    background-color: var(--hover-txt-btn);
+    border-radius: 50%;
+    border: 1px solid rgba(0,0,0,.1);
+    cursor: pointer;
+
+  }
+
+  .close_btn_icon {
+    fill: #fff;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    
+  }
+  .close_btn_icon:hover, .close_btn_icon:focus, .close_btn:hover, .close_btn:focus {
+    color: rgb(153, 192, 248)
+  }
