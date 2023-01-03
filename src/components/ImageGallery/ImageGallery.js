@@ -3,7 +3,7 @@ import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import Loader from '../Loader/Loader';
 import api from '../../services/imgAPI';
 import css from './ImageGallery.module.css';
-
+import Button from 'components/Button/Button';
 import MistakeImg from '../../images/mistake.jpg';
 // import Modal from 'components/Modal/Modal';
 
@@ -13,21 +13,35 @@ export default class ImageGallery extends Component {
     error: null,
     status: 'idle',
     showModal: false,
+    page: 1,
+    hits: [],
   };
 
-  componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     const prevQuery = prevProps.query;
     const nextQuery = this.props.query;
-    if (prevQuery !== nextQuery) {
+    if (prevQuery !== nextQuery || prevState.page !== this.state.page) {
       console.log('изменился запрос');
       this.setState({ status: 'pending' });
+      // try {
+      //   const images = api.fetchImg(nextQuery);
+      //   this.setState({images, status:'resolved'})
+      // } catch(error) {
+      //   this.setState({error,  status: 'rejected'})
+      // }
 
       api
         .fetchImg(nextQuery)
-        .then(images => this.setState({ images, status: 'resolved' }))
+        .then(images => this.setState({ images, status: 'resolved'}))
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
   }
+  loadMore = () => {
+      this.setState(prevState => ({
+        page: prevState.page + 1,
+      }));
+    };
+
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
@@ -54,13 +68,21 @@ export default class ImageGallery extends Component {
 
     if (status === 'resolved' && images.hits.length !== 0) {
       return (
+        <div>
         <ul className={css.ImageGallery}>
-          <ImageGalleryItem
-            images={images}
-            toggleModal={this.toggleModal}
-            showModal={this.state.showModal}
-          />
+         {/* {images.hits.map(image => {
+          return(  */}
+        <ImageGalleryItem
+              images={images}
+              toggleModal={this.toggleModal}
+              showModal={this.state.showModal}
+            />
+          {/* ) */}
+         {/* })} */}
+                      
         </ul>
+        <Button type='button' onClick={this.loadMore}>Load more</Button>
+        </div>
     
       );
     } else {

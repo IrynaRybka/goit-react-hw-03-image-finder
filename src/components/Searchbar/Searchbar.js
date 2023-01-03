@@ -5,30 +5,25 @@ import { ImSearch } from 'react-icons/im';
 import PropTypes from 'prop-types';
 import css from './Searchbar.module.css';
 // import api from '../../services/imgAPI';
-import Button from 'components/Button/Button';
+// import Button from 'components/Button/Button';
+// import api from 'services/imgAPI';
 
 export default class Searchbar extends Component {
   state = {
-    page: 1,
     query: '',
-    hits: [],
+    page: 1,
+    items: [],
   };
 
-  componentDidUpdate(_, prevState) {
-    if (
-      prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
-    ) {
-      
-      console.log('+1');
-    }
-  }
-
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
-  };
+  // componentDidUpdate(_, prevState) {
+  //   if (
+  //     prevState.query !== this.state.query ||
+  //     prevState.page !== this.state.page
+  //   ) {
+  //     api.fetchImg(this.state.page).then(pages =>this.setState({pages, page: this.loadMore,}))
+  //     console.log('+1');
+  //   }
+  // }
 
   handleQueryChange = event => {
     this.setState({ query: event.currentTarget.value.toLowerCase() });
@@ -44,16 +39,15 @@ export default class Searchbar extends Component {
     this.setState({
       page: 1,
       query: event.target.elements.query.value,
-      hits: [],
+      items: [],
     });
     event.target.reset();
   };
 
-
   render() {
     return (
-      <div className={css.Searchbar}>
-        <header>
+      
+        <header className={css.Searchbar}>
           <form className={css.SearchForm} onSubmit={this.handleSubmit}>
             <button type="submit" className={css.SearchForm_button} >
               <ImSearch className="button-label" />
@@ -68,9 +62,7 @@ export default class Searchbar extends Component {
               onChange={this.handleQueryChange}
             />
           </form>
-        </header>
-        <Button onClick={this.loadMore}>Load more</Button>
-      </div>
+        </header>      
     );
   }
 }
