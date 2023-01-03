@@ -70,15 +70,18 @@ export default class ImageGallery extends Component {
       return (
         <div>
         <ul className={css.ImageGallery}>
-         {/* {images.hits.map(image => {
-          return(  */}
-        <ImageGalleryItem
-              images={images}
+         {images.hits.map(({id, webformatURL, largeImageURL}) => {
+          return( 
+        <ImageGalleryItem 
+              key={id}
+              // image={image}
+              webformatURL={webformatURL}
+              largeImageURL={largeImageURL}
               toggleModal={this.toggleModal}
               showModal={this.state.showModal}
             />
-          {/* ) */}
-         {/* })} */}
+           ) 
+         })}
                       
         </ul>
         <Button type='button' onClick={this.loadMore}>Load more</Button>
