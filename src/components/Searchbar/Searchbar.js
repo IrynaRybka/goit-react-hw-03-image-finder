@@ -4,26 +4,13 @@ import { toast } from 'react-toastify';
 import { ImSearch } from 'react-icons/im';
 import PropTypes from 'prop-types';
 import css from './Searchbar.module.css';
-// import api from '../../services/imgAPI';
-// import Button from 'components/Button/Button';
-// import api from 'services/imgAPI';
 
 export default class Searchbar extends Component {
   state = {
     query: '',
     page: 1,
-    items: [],
+    hits: [],
   };
-
-  // componentDidUpdate(_, prevState) {
-  //   if (
-  //     prevState.query !== this.state.query ||
-  //     prevState.page !== this.state.page
-  //   ) {
-  //     api.fetchImg(this.state.page).then(pages =>this.setState({pages, page: this.loadMore,}))
-  //     console.log('+1');
-  //   }
-  // }
 
   handleQueryChange = event => {
     this.setState({ query: event.currentTarget.value.toLowerCase() });
@@ -36,14 +23,16 @@ export default class Searchbar extends Component {
       return;
     }
     this.props.onSubmit(this.state.query);
-    this.setState({
-      page: 1,
-      query: event.target.elements.query.value,
-      items: [],
-    });
+ 
+    // this.setState({
+    //   query: event.target.elements.query.value,
+    //   hits: [],
+    //   page: 1,
+    // });
     event.target.reset();
   };
 
+  
   render() {
     return (
       
@@ -53,6 +42,7 @@ export default class Searchbar extends Component {
               <ImSearch className="button-label" />
             </button>
             <input
+              // value={this.state.query}
               className={css.SearchForm_input}
               type="text"
               autoComplete="off"
