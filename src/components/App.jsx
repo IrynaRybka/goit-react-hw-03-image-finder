@@ -3,14 +3,15 @@ import { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/ReactToastify.min.css';
 import { toast } from 'react-toastify';
+import { IoCloseSharp } from 'react-icons/io5';
 import { api } from '../services/imgAPI';
 
-// import MistakeImg from '../images/mistake.jpg';
 import css from './App.module.css';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Loader from './Loader/Loader';
 import Button from './Button/Button';
+import Modal from './Modal/Modal';
 
 export default class App extends Component {
   state = {
@@ -18,21 +19,29 @@ export default class App extends Component {
     hits: [],
     page: 1,
     status: 'idle',
+    showModal: false,
+    modalImage: '',
   };
 
   async componentDidUpdate(prevProps, prevState) {
+    const {query, page} = this.state;
     if (
-      prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
+      prevState.query !== query ||
+      prevState.page !== page
     ) {
       try {
         this.setState({ status: 'pending' });
-        const { hits } = await api(this.state.query, this.state.page);
+        const { hits } = await api(query, page);
+        if (page === 1 && hits.length > 0) {
+          return this.setState({
+            status: 'resolved',
+            hits: [...hits],
+          });
+        }
         if (hits.length > 0) {
           return this.setState({
             status: 'resolved',
             hits: [...prevState.hits, ...hits],
-            query: this.state.query,
           });
         }
         if (hits.length < 1) {
@@ -46,7 +55,7 @@ export default class App extends Component {
   }
 
   handleSubmitForm = query => {
-    this.setState({ query, page: 1, hits:[] });
+    this.setState({ query });
   };
 
   loadMore = () => {
@@ -55,19 +64,16 @@ export default class App extends Component {
     }));
   };
 
-  // nextPage = async () => {
-  //   this.setState({ status: 'pending' });
-  // try {
-  //   const { hits } = await api(this.state.query, this.state.page);
-  //   this.setState(prevState => ({
-  //     hits: [...prevState.hits, ...hits],
-  //     status: 'resolved',
-  //     page: this.state.page + 1,
-  //   }));
-  // } catch (error) {
-  //   this.setState({ status: 'rejected' });
-  // }
-  // };
+  openModal = largeImageURL => {
+    this.setState({
+      showModal: true,
+      modalImage: largeImageURL,
+    });
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({ showModal: !showModal }));
+  };
 
   render() {
     const { status, hits, page, query } = this.state;
@@ -76,19 +82,35 @@ export default class App extends Component {
       return (
         <div>
           <ToastContainer position="top-left" theme="colored" />
-          <Searchbar onSubmit={this.handleSubmitForm}/>
+          <Searchbar onSubmit={this.handleSubmitForm} />
           <div className={css.text_idle}>
             <p>Напишите какие картинки вы хотите увидеть. Например "cat"</p>
           </div>
-        </div>
+           </div>
       );
     }
     if (status === 'pending') {
       return (
         <div>
-          <Searchbar onSubmit={this.handleSubmitForm}/>
+          <Searchbar onSubmit={this.handleSubmitForm} />
           <Loader />
-          <ImageGallery query={query} page={page} hits={hits} />
+          <ImageGallery hits={hits} onImgClick={this.openModal} />
+          {this.state.showModal && (
+            <Modal onClose={this.toggleModal}>
+              <button
+                type="button"
+                onClick={this.toggleModal}
+                className={css.close_btn}
+              >
+                <IoCloseSharp className={css.close_btn_icon} />
+              </button>
+              <img
+                className={css.largeImageURL}
+                src={this.state.modalImage}
+                alt="your query"
+              />
+            </Modal>
+          )}
           {page > 1 && (
             <Button type="button" onClick={this.loadMore}>
               Load more
@@ -100,7 +122,7 @@ export default class App extends Component {
     if (status === 'rejected') {
       return (
         <div>
-          <Searchbar onSubmit={this.handleSubmitForm}/>
+          <Searchbar onSubmit={this.handleSubmitForm} />
           <p>Упс, что-то пошло не так. Попробуйте чуть позже</p>
         </div>
       );
@@ -108,25 +130,36 @@ export default class App extends Component {
     if (status === 'resolved') {
       return (
         <div>
-          <Searchbar onSubmit={this.handleSubmitForm}/>
-          <ImageGallery query={query} page={page} hits={hits} />
+          <Searchbar onSubmit={this.handleSubmitForm} />
+          <ImageGallery
+            query={query}
+            page={page}
+            hits={hits}
+            onImgClick={this.openModal}
+          />
           {page > 0 && (
             <Button type="button" onClick={this.loadMore}>
               Load more
             </Button>
           )}
+          {this.state.showModal && (
+            <Modal onClose={this.toggleModal}>
+              <button
+                type="button"
+                onClick={this.toggleModal}
+                className={css.close_btn}
+              >
+                <IoCloseSharp className={css.close_btn_icon} />
+              </button>
+              <img
+                className={css.largeImageURL}
+                src={this.state.modalImage}
+                alt="your query"
+              />
+            </Modal>
+          )}
         </div>
       );
-      // } else {
-      //   return (
-      //     <div>
-      //       <Searchbar onSubmit={this.handleSubmitForm}/>
-      //     <div className={css.Error_Img}>
-      //       <p>С названием {query} картинок нет. Попробуйте еще раз</p>
-      //       <img src={MistakeImg} width="320" alt="Mistake" />
-      //     </div>
-      //     </div>
-      //   );
     }
   }
 }

@@ -1,31 +1,22 @@
-import { Component } from 'react';
+import PropTypes from 'prop-types';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import css from './ImageGallery.module.css';
-// import Modal from 'components/Modal/Modal';
-// import { IoCloseSharp } from 'react-icons/io5';
-export default class ImageGallery extends Component {
-  state = {
-     showModal: false,
-    }
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({ showModal: !showModal }));
-  };
-
- render() {
-    const { hits } = this.props;
-      return (
-        <ul className={css.ImageGallery}>
-         {hits.map(hit => (
-        <ImageGalleryItem 
-              key={hit.id}
-              webformatURL={hit.webformatURL}
-              toggleModal={this.toggleModal}
-              showModal={this.state.showModal}
-              largeImageURL={hit.largeImageURL}
-            />
-           ))}
-         </ul>
-      )
-  }
+export default function ImageGallery({ hits, onImgClick }) {
+  return (
+    <ul className={css.ImageGallery}>
+      {hits.map(hit => (
+        <ImageGalleryItem
+          key={hit.id}
+          webformatURL={hit.webformatURL}
+          largeImageURL={hit.largeImageURL}
+          openModal={onImgClick}
+        />
+      ))}
+    </ul>
+  );
 }
+ImageGallery.propTypes = {
+  hits: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onImgClick: PropTypes.func.isRequired,
+};
