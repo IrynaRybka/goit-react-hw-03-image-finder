@@ -2,13 +2,16 @@ import { Component } from 'react';
 import { toast } from 'react-toastify';
 
 import { ImSearch } from 'react-icons/im';
-import PropTypes from 'prop-types';
+import { func } from 'prop-types';
 import css from './Searchbar.module.css';
 
 export default class Searchbar extends Component {
+  static defaultProps={
+    onSubmit: func,
+  }
+  
   state = {
     query: '',
-    page: 1,
   };
 
   handleQueryChange = event => {
@@ -25,7 +28,6 @@ export default class Searchbar extends Component {
 
     this.setState({
       query: event.target.elements.query.value,
-      page: 1,
     });
   };
 
@@ -51,6 +53,6 @@ export default class Searchbar extends Component {
   }
 }
 
-Searchbar.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
+// Searchbar.propTypes = {
+//   onSubmit: PropTypes.func.isRequired,
+// };

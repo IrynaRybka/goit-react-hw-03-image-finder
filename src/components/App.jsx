@@ -23,45 +23,39 @@ export default class App extends Component {
     modalImage: '',
   };
 
-  async componentDidUpdate(prevProps, prevState) {
-    const {query, page} = this.state;
-    if (
-      prevState.query !== query ||
-      prevState.page !== page
-    ) {
-      try {
-        this.setState({ status: 'pending' });
-        const { hits } = await api(query, page);
-        if (page === 1 && hits.length > 0) {
-          return this.setState({
-            status: 'resolved',
-            hits: [...hits],
-          });
-        }
-        if (hits.length > 0) {
-          return this.setState({
-            status: 'resolved',
-            hits: [...prevState.hits, ...hits],
-          });
-        }
-        if (hits.length < 1) {
-          this.setState({ status: 'idle' });
-          toast.info('Нет таких картинок, попробуйте другое слово');
-        }
-      } catch (error) {
-        this.setState({ status: 'rejected' });
+  handleSubmitForm = async (query, page) => {
+    try {
+      const { hits } = await api(query, page);
+      if (hits.length > 0) {
+        this.setState({
+          status: 'resolved',
+          hits: [...hits],
+          page: 1,
+          query,
+        });
+      } else {
+        this.setState({ status: 'idle' });
+        toast.info('Нет таких картинок, попробуйте другое слово');
       }
+    } catch (error) {
+      this.setState({ status: 'rejected' });
     }
-  }
-
-  handleSubmitForm = query => {
-    this.setState({ query });
   };
 
-  loadMore = () => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
+  loadMore = async () => {
+    this.setState({ status: 'pending' });
+    const nextPage = this.state.page + 1;
+    try {
+      const { hits } = await api(this.state.query, nextPage);
+      this.setState(prevState => ({
+        status: 'resolved',
+        hits: [...prevState.hits, ...hits],
+        page: prevState.page + 1,
+        query: this.state.query,
+      }));
+    } catch (error) {
+      this.setState({ status: 'rejected' });
+    }
   };
 
   openModal = largeImageURL => {
@@ -86,7 +80,7 @@ export default class App extends Component {
           <div className={css.text_idle}>
             <p>Напишите какие картинки вы хотите увидеть. Например "cat"</p>
           </div>
-           </div>
+        </div>
       );
     }
     if (status === 'pending') {
@@ -137,6 +131,7 @@ export default class App extends Component {
             hits={hits}
             onImgClick={this.openModal}
           />
+
           {page > 0 && (
             <Button type="button" onClick={this.loadMore}>
               Load more

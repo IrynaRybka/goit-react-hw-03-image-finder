@@ -1,11 +1,15 @@
 import { Component } from 'react';
 import { createPortal } from 'react-dom';
-import PropTypes from 'prop-types';
+import { func, node } from 'prop-types';
 import css from './Modal.module.css';
 
 const modalRoot = document.querySelector('#modal-root');
 
 export default class Modal extends Component {
+  static defaultProps={
+    children: node,
+    onClose: func,
+  }
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
@@ -34,7 +38,7 @@ export default class Modal extends Component {
     );
   }
 }
-Modal.propTypes = {
-    children: PropTypes.node.isRequired,
-    onClose: PropTypes.func.isRequired,
-};
+// Modal.propTypes = {
+//     children: PropTypes.node.isRequired,
+//     onClose: PropTypes.func.isRequired,
+// };
